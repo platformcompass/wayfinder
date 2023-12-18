@@ -1,0 +1,4 @@
+bin/
+Brewfile.lock.json
+.env
+chart/charts/

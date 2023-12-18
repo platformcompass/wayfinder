@@ -1,0 +1,26 @@
+voyage: daytrip
+description: |- 
+  Essential provisions for a personal development cluster.
+
+# Render subcharts for dev/test/build/packaging. (Typically not used for final release)
+render-subcharts: false
+
+# GitOps Configuration - Deploy with Flux HelmRepository/HelmRelease
+GitOps:
+  Flux:
+    enabled: true
+  charts:
+    - name: kube-prometheus-stack
+      version: 54.0.1
+      repository: https://prometheus-community.github.io/helm-charts
+      dependsOn:
+        - name: external-secrets
+    - name: cert-manager
+      version: 1.9.1    
+      repository: https://charts.jetstack.io
+      dependsOn:
+        - name: external-secrets
+    - name: external-secrets
+      version: 0.9.10
+      repository: https://charts.external-secrets.io
+      dependsOn: []
