@@ -1,0 +1,77 @@
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: flux-sync
+  namespace: flux-system
+spec:
+  interval: 24h
+  timeout: 5m
+  path: ./
+  prune: true
+  sourceRef:
+    kind: OCIRepository
+    name: flux-source
+  patches:
+    - patch: |
+        - op: add
+          path: /spec/template/spec/containers/0/args/-
+          value: --concurrent=20
+        - op: add
+          path: /spec/template/spec/containers/0/args/-
+          value: --requeue-dependency=5s
+      target:
+        kind: Deployment
+        name: "(kustomize-controller|helm-controller|source-controller)"
+    - patch: |
+        apiVersion: apps/v1
+        kind: Deployment
+        metadata:
+          name: all
+        spec:
+          template:
+            spec:
+              containers:
+                - name: manager
+                  resources:
+                    limits:
+                      cpu: 2000m
+                      memory: 2Gi
+      target:
+        kind: Deployment
+        name: "(kustomize-controller|helm-controller|source-controller)"
+    - patch: |
+        - op: add
+          path: '/spec/template/spec/volumes/-'
+          value:
+            name: persistent-data
+            persistentVolumeClaim:
+              claimName: flux-pvc
+        - op: replace
+          path: '/spec/template/spec/containers/0/volumeMounts/0'
+          value:
+            name: persistent-data
+            mountPath: /data
+      target:
+        kind: Deployment
+        name: "source-controller"
+    - patch: |
+        apiVersion: v1
+        kind: Namespace
+        metadata:
+          name: flux-system
+          labels:
+            toolkit.fluxcd.io/tenant: sre-team
+      target:
+        kind: Namespace
+        name: flux-system
+    - patch: |
+        - op: add
+          path: /spec/template/spec/containers/0/args/-
+          value: --feature-gates=DetectDrift=true,OOMWatch=true
+        - op: replace
+          path: /spec/template/spec/containers/0/args/2
+          value: --log-level=debug
+      target:
+        kind: Deployment
+        name: "(helm-controller)"

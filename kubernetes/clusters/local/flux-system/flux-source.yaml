@@ -1,0 +1,15 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: OCIRepository
+metadata:
+  name: flux-source
+  namespace: flux-system
+spec:
+  interval: 1m
+  provider: generic
+  ref:
+    tag: latest
+  url: oci://ghcr.io/fluxcd/flux-manifests
+  verify:
+    provider: cosign
+

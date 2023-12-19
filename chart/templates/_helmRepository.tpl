@@ -1,12 +1,12 @@
+{{- define "wayfinder.helmrepository" }}
 ---
 apiVersion: source.toolkit.fluxcd.io/v1beta2
-kind: OCIRepository
+kind: HelmRepository
 metadata:
-  name: podinfo
-  namespace: flux-system
+  name: {{ .name }}
+  namespace: {{ .name }}
 spec:
-  interval: 10m0s
+  interval: {{ default "10m0s" .interval }}
   provider: generic
-  ref:
-    tag: 6.1.6
-  url: oci://ghcr.io/stefanprodan/manifests/podinfo
+  url: {{ .repository }}
+{{- end }}

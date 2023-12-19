@@ -1,0 +1,26 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  # Flux System Components needed First - Auto upgrades to latest version
+  # flux-source -> External Flux OCI Repository
+  - flux-source.yaml 
+  - flux-sync.yaml
+  - flux-pvc.yaml
+
+  # Source and Kustomization (sync) Controller to reconcile Non-Flux Cluster Resources (Apps and Infra))
+  # cluster-source -> OCI crated locally from kubernetes/clusters/local directory
+  - cluster-source.yaml
+  - cluster-sync.yaml
+    # Resources Created from the Cluster Sync
+    # - Infra Source Controller
+    # - Infra Kustomization (Sync) Controller
+
+    # - Apps Source Controller
+    # - Apps Kustomization (Sync) Controller
+  
+secretGenerator:
+  - name: sample-secret
+    namespace: flux-system
+    literals:
+      - foo=bar
+    

@@ -14,7 +14,9 @@ spec:
         kind: HelmRepository
         name: podinfo
       version: {{ .version }}
-      dependsOn:
-        {{- toYaml .dependsOn | nindent 8 }}
+  {{- if  .dependsOn }}
+  dependsOn:
+  {{- toYaml .dependsOn | nindent 2 }}
+  {{- end }}
   interval: 10m0s
   {{- end }}
