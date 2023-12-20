@@ -29,4 +29,4 @@ spec:
   {{- end }}
   interval: 10m0s
   {{- end }}
-{{ end }}
+{{- end }}

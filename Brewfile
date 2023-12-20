@@ -10,6 +10,14 @@ brew "kustomize"
 brew "kubeconform"
 brew "gomplate"
 
+# KUbernetes Test TooL (kuttl)
+tap "kudobuilder/tap"
+brew "kuttl-cli"
+
+# YAML tools
+brew "yamllint"
+brew "homeport/tap/dyff"
+
 # OCI tools
 brew "oras"
 brew "crane"

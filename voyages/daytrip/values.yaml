@@ -1,0 +1,50 @@
+voyage: daytrip
+version: 0.1.1
+appVersion: 0.1.1
+
+description: |- 
+  Essential provisions for a personal development cluster.
+
+createNamespace: true
+
+# Render subcharts for dev/test/build/packaging. (Typically not used for final release)
+render-subcharts: false
+
+# Subchart Default Values
+# externalSecrets:
+#   createNamespace: true
+
+komodorAgent:
+  namespace: komodor
+  createNamespace: true
+  apiKey: 'YOUR_API_KEY'
+
+# GitOps Configuration - Deploy with Flux HelmRepository/HelmRelease
+GitOps:
+  Flux:
+    enabled: true
+  charts:
+    # - name: kube-prometheus-stack
+    #   version: 54.0.1
+    #   repository: https://prometheus-community.github.io/helm-charts
+    #   dependsOn:
+    #     - name: external-secrets
+    # - name: cert-manager
+    #   version: 1.9.1    
+    #   repository: https://charts.jetstack.io
+    #   dependsOn:
+    #   - name: external-secrets
+    - name: external-secrets
+      alias: externalSecrets
+      version: '0.9.10'
+      repository: https://charts.external-secrets.io
+      interval: 10m
+    - name: komodor-agent
+      alias: komodorAgent
+      namespace: komodor
+      version: '2.1.0'
+      repository: https://helm-charts.komodor.io
+      interval: 10m
+      valuesFrom: []
+      # dependsOn:
+      # - name: external-secrets

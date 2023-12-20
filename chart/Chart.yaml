@@ -1,22 +1,14 @@
+---
 apiVersion: v2
 name: wayfinder
-description: A Helm chart for installing Voyages -  A named collection of Helm Charts and pre-tested configureations to a Kubernetes cluster.
-
+description: >
+  A Helm chart for installing Voyages (a collection of Helm Charts
+  and pre-tested configs to yer cluster).
 type: application
-
-version: 0.1.0
-
-appVersion: "0.1.0"
+version: "0.1.1"
+appVersion: "0.1.1"
 
 dependencies:
-  # - name: kube-prometheus-stack
-  #   version: 54.0.1
-  #   repository: https://prometheus-community.github.io/helm-charts
-  #   condition: render-subcharts
-  # - name: cert-manager
-  #   version: 1.9.1
-  #   repository: https://charts.jetstack.io
-  #   condition: render-subcharts
   - name: external-secrets
     alias: externalSecrets
     version: 0.9.10
@@ -24,9 +16,6 @@ dependencies:
     condition: render-subcharts
   - name: komodor-agent
     alias: komodorAgent
-    version: ~2.1.0-0
+    version: 2.1.0
     repository: https://helm-charts.komodor.io
     condition: render-subcharts
-  - name: common
-    version: 2.x.x
-    repository: oci://registry-1.docker.io/bitnamicharts

@@ -13,4 +13,4 @@ spec:
   provider: generic
   url: {{ .repository }}
 {{- end }}
-{{ end }}
+{{- end }}

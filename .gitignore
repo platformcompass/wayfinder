@@ -4,3 +4,4 @@ Brewfile.lock.json
 chart/charts/
 Chart.lock
 .DS_Store
+.wayfinder
