@@ -1,0 +1,8 @@
+apiVersion: kustomize.config.k8s.io/v1alpha1
+kind: Component
+
+secretGenerator:
+  - name: "{{ .name }}"
+    namespace: "{{ .namespace }}"
+    files:
+      - values=values.yaml

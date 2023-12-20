@@ -1,0 +1,6 @@
+# Default Values
+externalSecrets:
+  createNamespace: false
+
+  secretGeneratorConfig:
+  

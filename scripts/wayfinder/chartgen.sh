@@ -89,7 +89,9 @@ fi
 
 msg "${YELLOW}Pack yer bags, generating chart for voyage ${VOYAGE}${NOFORMAT}..."
 
-gomplate -d values=$VOYAGE/values.yaml -f chartgen/templates/chart.tpl  | tee $VOYAGE/.wayfinder/generated/Chart.yaml
+gomplate -d values=$VOYAGE/values.yaml -f chartgen/templates/chart.tpl > $VOYAGE/.wayfinder/generated/Chart.yaml
+
+dyff yaml $VOYAGE/.wayfinder/generated/Chart.yaml 
 
 msg "${GREEN}Chart plotted.${NOFORMAT}"
 
@@ -106,8 +108,7 @@ diff_exit_code=0
     # Copy the generated chart to the chart directory
     cp -i $VOYAGE/.wayfinder/generated/Chart.yaml ../../chart/Chart.yaml
   else
-    echo "✔ no changes detected in ${$VOYAGE/.wayfinder/generated/Chart.yaml}"
-    return
+    echo "✔ no changes detected in {$VOYAGE/.wayfinder/generated/Chart.yaml}"    
   fi
 
 
