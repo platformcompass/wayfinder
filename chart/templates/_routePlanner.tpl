@@ -5,8 +5,8 @@ Create resources for each chart in GitOps charts
 {{- if .Values.GitOps.Flux.enabled -}}
 {{- with .Values.GitOps.charts -}}
 {{- range $index, $chart := . }}
-{{- include "wayfinder.helmrepository" . }}
-{{- include "wayfinder.helmrelease" . }}
+{{- include "wayfinder.helmrepository" (list $ . ) }}
+{{- include "wayfinder.helmrelease" (list $ . ) }}
 {{- end }}
 {{- end }}
 {{- end }}

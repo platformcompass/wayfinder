@@ -18,11 +18,15 @@ dependencies:
   #   repository: https://charts.jetstack.io
   #   condition: render-subcharts
   - name: external-secrets
+    alias: externalSecrets
     version: 0.9.10
     repository: https://charts.external-secrets.io
     condition: render-subcharts
   - name: komodor-agent
+    alias: komodorAgent
     version: ~2.1.0-0
     repository: https://helm-charts.komodor.io
     condition: render-subcharts
-      
+  - name: common
+    version: 2.x.x
+    repository: oci://registry-1.docker.io/bitnamicharts

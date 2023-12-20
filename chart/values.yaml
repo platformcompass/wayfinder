@@ -2,8 +2,19 @@ voyage: daytrip
 description: |- 
   Essential provisions for a personal development cluster.
 
+createNamespace: true
+
 # Render subcharts for dev/test/build/packaging. (Typically not used for final release)
 render-subcharts: false
+
+# Subchart Default Values
+externalSecrets:
+  createNamespace: true
+
+komodorAgent:
+  namespace: komodor
+  createNamespace: true
+  apiKey: 'YOUR_API_KEY'
 
 # GitOps Configuration - Deploy with Flux HelmRepository/HelmRelease
 GitOps:
@@ -21,12 +32,16 @@ GitOps:
     #   dependsOn:
     #   - name: external-secrets
     - name: external-secrets
-      version: '0.9.10'      
+      alias: externalSecrets
+      version: '0.9.10'
       repository: https://charts.external-secrets.io
       interval: 10m
     - name: komodor-agent
+      alias: komodorAgent
+      namespace: komodor
       version: '2.1.0'
       repository: https://helm-charts.komodor.io
       interval: 10m
-      dependsOn:
-      - name: external-secrets
+      valuesFrom: []
+      # dependsOn:
+      # - name: external-secrets
