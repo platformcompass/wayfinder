@@ -1,6 +1,6 @@
 voyage: minnow
-version: 0.1.1
-appVersion: 0.1.1
+version: 0.1.3
+appVersion: 0.1.3
 description: A jaunt on a wee sloop with a lot o' spunk
 createNamespace: true
 # Render subcharts for dev/test/build/packaging. (Typically not used for final release)

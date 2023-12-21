@@ -109,6 +109,15 @@ diff_exit_code=0
     msg "${BLUE}Avast, are ye sure o' yer course?${NOFORMAT}"
     # Copy the generated chart to the chart directory
     cp -i $VOYAGE/.wayfinder/generated/Chart.yaml ../../chart/Chart.yaml
+
+    # Remove the old Chart.lock
+    rm -rf ../../chart/Chart.lock
+    
+    # Remove the old charts directory
+    rm -rf ../../chart/charts/
+
+    ./update-dependencies.sh
+
   else
     echo "✔ no changes detected in {$VOYAGE/.wayfinder/generated/Chart.yaml}"    
   fi
