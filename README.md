@@ -59,8 +59,8 @@ installed at bootstrap.
 Start by cloning the repository locally:
 
 ```shell
-git clone https://github.com/stefanprodan/flux-local-dev.git
-cd flux-local-dev
+git clone https://github.com/bobmhong/wayfinder.git
+cd wayfinder
 ```
 
 Install Kubernetes kind, kubectl, flux and other CLI tools with Homebrew:
