@@ -18,11 +18,13 @@ GitOps:
         enabled: true
     charts:
         # - name: kube-prometheus-stack
+        #   alias: kubePrometheusStack
         #   version: 54.0.1
         #   repository: https://prometheus-community.github.io/helm-charts
         #   dependsOn:
         #     - name: external-secrets
         # - name: cert-manager
+        #   alias: certManager
         #   version: 1.9.1    
         #   repository: https://charts.jetstack.io
         #   dependsOn:

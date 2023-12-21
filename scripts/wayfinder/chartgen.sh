@@ -89,9 +89,11 @@ fi
 
 msg "${YELLOW}Pack yer bags, generating chart for voyage ${VOYAGE}${NOFORMAT}..."
 
-gomplate -d values=$VOYAGE/values.yaml -f chartgen/templates/chart.tpl > $VOYAGE/.wayfinder/generated/Chart.yaml
+template=chart.tpl
+# template=echo.tpl
+gomplate -d values=${VOYAGE}values.yaml -f chartgen/templates/${template} > $VOYAGE/.wayfinder/generated/Chart.yaml
 
-dyff yaml $VOYAGE/.wayfinder/generated/Chart.yaml 
+dyff yaml ${VOYAGE}.wayfinder/generated/Chart.yaml 
 
 msg "${GREEN}Chart plotted.${NOFORMAT}"
 
