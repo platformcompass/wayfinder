@@ -1,3 +1,5 @@
+# Work log and notes
+
 gomplate -d person=./person.json -i 'Hello {{ (datasource "person").name }}'
 Hello Dave
 
@@ -11,6 +13,6 @@ Hello Dave
 ## Env File Subst
 gomplate -d envfile=./.env -i 'Hello {{ (datasource "envfile").KOMOKW_API_KEY }}'
 
+cat ./render.sh | envsubst
 
-
- cat ./render.sh | envsubst
+sops -e -i -config $SOPS_CONFIG $VOYAGE/values.yaml 

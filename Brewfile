@@ -26,3 +26,7 @@ brew "cosign"
 # Flux
 tap "fluxcd/tap"
 brew "fluxcd/tap/flux"
+
+# Encryption
+brew "age"
+brew "sops"

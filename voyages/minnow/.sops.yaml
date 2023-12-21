@@ -1,0 +1,14 @@
+creation_rules:
+  # # Single Encrypted files
+  # - path_regex: .*.encrypted
+  #   shamir_threshold: 1
+  #   key_groups:
+  #     - age: 'age1jkw7vlnem3kfc7amta3musdqz9fpq4hf7hcs45q8qckwk5nfvy9q9prd2a'
+  # # Encrypted config files
+  # - path_regex: .*.yaml
+  #   encrypted_regex: ^(data|stringData)$
+  #   shamir_threshold: 1
+  #   key_groups:
+  #     - age: 'age1jkw7vlnem3kfc7amta3musdqz9fpq4hf7hcs45q8qckwk5nfvy9q9prd2a'
+  # Catch All
+  - age: 'age1jkw7vlnem3kfc7amta3musdqz9fpq4hf7hcs45q8qckwk5nfvy9q9prd2a'
