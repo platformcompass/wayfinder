@@ -40,10 +40,10 @@ die() {
   exit "$code"
 }
 
+setup_colors
+
 script_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd -P)
 working_dir=$(pwd -P)
-
-setup_colors
 
 if [[ ${script_dir} == ${working_dir} ]]; then
   root="../../"

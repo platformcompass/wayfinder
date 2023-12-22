@@ -76,11 +76,21 @@ parse_params() {
 parse_params "$@"
 setup_colors
 
+script_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd -P)
+working_dir=$(pwd -P)
+
+if [[ ${script_dir} == ${working_dir} ]]; then
+  root="../../"
+  mkdir -p ${root}${VOYAGE}/.wayfinder/generated/
+else
+  die "${RED}Please run this script from the scripts/wayfinder directory or use make from the root directory."
+fi
+
 VOYAGE=$voyage
 msg "voyage: $VOYAGE"
 
-sopsConfig=$VOYAGE.sops.yaml
-SOPS_AGE_KEY_FILE=$VOYAGE/.wayfinder/key.txt
+sopsConfig=${root}${VOYAGE}/.sops.yaml
+SOPS_AGE_KEY_FILE=${root}${VOYAGE}/.wayfinder/key.txt
 
 if [[ ! -f $sopsConfig ]]; then
     msg "${YELLOW}You'll need a place for your loot...let's create a .sops.yaml file in your voyage directory${NOFORMAT}"

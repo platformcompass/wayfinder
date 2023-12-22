@@ -63,6 +63,10 @@ full:
 gitops:
 	@cd scripts/wayfinder && ./render-gitops.sh $(ARGS)
 
+.PHONY: sops
+sops:
+	@cd scripts/wayfinder && ./setup-encryption.sh $(ARGS)
+
 .PHONY: echo
 echo:
 	@cd scripts/wayfinder && ./echo.sh  $(ARGS)
