@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 set -o errexit
 
-helm dep update ../../chart
+helm dep update --debug ../../chart

@@ -9,7 +9,7 @@ usage() {
   cat <<EOF
 Usage: $(basename "${BASH_SOURCE[0]}") [-h] [-v] [-f] -r v2.1.0
 
-Generates the K8s YAML files for configuring your voyage via GitOps.
+Generates the full K8s YAML files from all dependent subcharts. (Useful for debugging and CI Validation)
 
 Available options:
 
@@ -49,7 +49,7 @@ parse_params() {
 
   # Default to VOYAGE environment variable of set
   if [[ -n ${VOYAGE:-} ]]; then
-      voyage=${VOYAGE%/}
+      voyage=$VOYAGE
   fi
 
   while :; do
@@ -78,13 +78,13 @@ setup_colors
 
 VOYAGE=$voyage
 valuesFile=$VOYAGE/values.yaml
-relaseName=$(basename $VOYAGE)
+releaseName=$(basename $VOYAGE)
 
-msg "${YELLOW}We be packin' ol $relaseName to plunder and glory, yarr!"
+msg "${YELLOW}We be packin' ol $releaseName to plunder and glory, yarr!"
 
-mkdir -p $VOYAGE/.wayfinder/generated/gitops/helm
+mkdir -p $VOYAGE/.wayfinder/generated/full
 
-outFile=$VOYAGE/.wayfinder/generated/gitops/helm/wayfinder.yaml
+outFile=$VOYAGE/.wayfinder/generated/full/wayfinder.yaml
 
 # Create an empty output file if it doesn't exist
 if [[ ! -f $outFile ]]
@@ -95,13 +95,16 @@ fi
 # Backup last generated resources
 mv $outFile $outFile.bak || true
 
-helm template $releaseName ../../chart --namespace wayfinder --values=$valuesFile --set GitOps.Flux.enabled=true --set render-subcharts=false --set komodorAgent.apiKey=$KOMOKW_API_KEY --set komodorAgent.clusterName=wayfinder-demo  > $outFile
+helm template $releaseName ../../chart --namespace wayfinder --values=$valuesFile --set GitOps.Flux.enabled=false --set render-subcharts=true --set komodorAgent.apiKey=$KOMOKW_API_KEY --set komodorAgent.clusterName=wayfinder-demo  > $outFile
 
+# Gonna be a lot of text scrolling by, let's hide by default
 # Show the new resources in a nice output
-dyff yaml $outFile
+# dyff yaml $outFile
 
 msg "${YELLOW}Linting..."
-yamllint $outFile
+yamllint $outFile || true > $outFile.lint.txt
+lintErrors=$(wc -l $outFile.lint.txt | awk {'print $1'})
+echo "See ${outFile}.lint.txt for Linting details"
 
 # Compare what changed
 dyff between $outFile.bak $outFile

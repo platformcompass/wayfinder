@@ -3,6 +3,9 @@
 # - Docker
 # - Homebrew
 
+.POSIX:
+.EXPORT_ALL_VARIABLES:
+
 .PHONY: up
 up: cluster-up flux-push flux-up ## Create the local cluster and registry, install Flux and the cluster addons
 	kubectl -n flux-system wait kustomization/cluster-sync --for=condition=ready --timeout=5m
@@ -47,6 +50,22 @@ flux-down:
 .PHONY: flux-push
 flux-push:
 	scripts/flux/push.sh
+
+.PHONY: chart
+chart:
+	@cd scripts/wayfinder && ./chartgen.sh $(ARGS)
+
+.PHONY: full
+full:
+	@cd scripts/wayfinder && ./render-full.sh $(ARGS)
+
+.PHONY: gitops
+gitops:
+	@cd scripts/wayfinder && ./render-gitops.sh $(ARGS)
+
+.PHONY: echo
+echo:
+	@cd scripts/wayfinder && ./echo.sh  $(ARGS)
 
 .PHONY: help
 help:  ## Display this help menu

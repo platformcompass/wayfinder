@@ -93,7 +93,7 @@ if [[ ! -f $sopsConfig ]]; then
 
     export SOPS_AGE_KEY=$(grep 'public key:'  $SOPS_AGE_KEY_FILE | awk {'print $4'})
 
-    gomplate  -f chartgen/templates/.sops.yaml.tpl > $sopsConfig
+    gomplate  -f templates/.sops.yaml.tpl > $sopsConfig
 
     # For Production use, you'll want a stronger lock - consider https://github.com/getsops/sops?tab=readme-ov-file#26encrypting-using-hashicorp-vault
     msg "${GREEN}Chest is hidden and ye have the key to open it. Dig up $sopsConfig if you want to make changes.${NOFORMAT}"

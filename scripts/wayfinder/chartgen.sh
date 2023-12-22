@@ -1,13 +1,10 @@
 #!/usr/bin/env bash
-
 set -Eeo pipefail
 trap cleanup SIGINT SIGTERM ERR EXIT
 
-script_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd -P)
-
 usage() {
   cat <<EOF
-Usage: $(basename "${BASH_SOURCE[0]}") [-h] [-v] [-f] -r v2.1.0
+Usage: $(basename "${BASH_SOURCE[0]}") --voyage <path/to/voyage>
 
 Generates the chart.yaml for developing new voyages or wayfinder chart releases.
 
@@ -15,7 +12,7 @@ Available options:
 
 -h, --help                Print this help and exit
 -v, --verbose             Print script debug info
---voyage                  Path to your voyage directory
+-y, --voyage              Path to your voyage directory
 EOF
   exit
 }
@@ -43,14 +40,22 @@ die() {
   exit "$code"
 }
 
-parse_params() {
-  force=0
-  releaseVersion=''
+script_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd -P)
+working_dir=$(pwd -P)
 
-  # Default to VOYAGE environment variable of set
-  if [[ -n ${VOYAGE:-} ]]; then
-      voyage=$VOYAGE
-  fi
+setup_colors
+
+if [[ ${script_dir} == ${working_dir} ]]; then
+  root="../../"
+  mkdir -p ${root}${VOYAGE}/.wayfinder/generated/
+else
+  die "${RED}Please run this script from the scripts/wayfinder directory or use make from the root directory."
+fi
+
+source "${script_dir}/common.sh"
+voyage=${VOYAGE:-$DEFAULT_VOYAGE}
+
+parse_params() {
 
   while :; do
     case "${1-}" in
@@ -58,7 +63,7 @@ parse_params() {
     -v | --verbose) set -x ;;
     --no-color) NO_COLOR=1 ;;
     --voyage)
-      voyage="${2-}"      
+      voyage="${2-}" 
       shift
       ;;
     -?*) die "Unknown option: $1" ;;
@@ -68,59 +73,55 @@ parse_params() {
   done
 
   args=("$@")
-  [[ -z "${voyage}" ]] && die "Where to sailor? Please provide the '--voyage' parameter or set VOYAGE environment variable."
+  
+  [[ -z "${voyage}" ]] && die "${RED}Where to sailor? Please provide the '--voyage' parameter or set VOYAGE environment variable."
 
   return 0
 }
 
 parse_params "$@"
-setup_colors
 
 VOYAGE=$voyage
-msg "voyage: $VOYAGE"
 
-valuesFile=$VOYAGE/values.yaml
+if [[ ${VOYAGE} == ${DEFAULT_VOYAGE} ]]; then
+  msg "${BLUE}Welcome Greenbeard - You've chosen the default voyage on ${GREEN}$(basename ${VOYAGE}). ${BLUE}Good for trying out yer sea legs.${NOFORMAT}"
+else
+  msg "${YELLOW}Welcome aboard ${GREEN}$(basename ${VOYAGE})${BLUE}!${NOFORMAT}"
+fi
 
+valuesFile=${root}${VOYAGE}/values.yaml
 
-if [[ ! -f $valuesFile ]]
-then
+if [[ ! -f $valuesFile ]]; then
   die "${RED}Sorry matey - I can't find yer belongins. Please ensure a values.yaml file exists in the voyage directory."
 fi
 
-msg "${YELLOW}Pack yer bags, generating chart for voyage ${VOYAGE}${NOFORMAT}..."
+msg "${YELLOW}Pack yer bags while we generate ol charty...${NOFORMAT}"
 
 template=chart.tpl
 # template=echo.tpl
-gomplate -d values=${VOYAGE}values.yaml -f chartgen/templates/${template} > $VOYAGE/.wayfinder/generated/Chart.yaml
+gomplate -d values=${valuesFile} -f ${script_dir}/templates/${template} > ${root}${VOYAGE}/.wayfinder/generated/Chart.yaml
 
-dyff yaml ${VOYAGE}.wayfinder/generated/Chart.yaml 
+dyff yaml ${root}${VOYAGE}/.wayfinder/generated/Chart.yaml
 
 msg "${GREEN}Chart plotted.${NOFORMAT}"
 
 msg "${YELLOW}Linting..."
-yamllint $VOYAGE/.wayfinder/generated/Chart.yaml
+yamllint ${root}${VOYAGE}/.wayfinder/generated/Chart.yaml
 
 diff_exit_code=0
-  # Compare existing chart to generated chart
-  dyff between ../../chart/Chart.yaml $VOYAGE/.wayfinder/generated/Chart.yaml --set-exit-code || diff_exit_code=$?
+# Compare existing chart to generated chart
+dyff between ${root}chart/Chart.yaml ${root}${VOYAGE}/.wayfinder/generated/Chart.yaml --set-exit-code || diff_exit_code=$?
 
-  if [[  ${diff_exit_code} -ne 0 ]]; then
+if [[ ${diff_exit_code} -ne 0 ]]; then
 
-    msg "${BLUE}Avast, are ye sure o' yer course?${NOFORMAT}"
-    # Copy the generated chart to the chart directory
-    cp -i $VOYAGE/.wayfinder/generated/Chart.yaml ../../chart/Chart.yaml
+  msg "${BLUE}Avast, are ye sure o' yer course?${NOFORMAT}"
+  # Copy the generated chart to the chart directory
+  cp -i ${root}${VOYAGE}/.wayfinder/generated/Chart.yaml ${script_dir}/../../chart/Chart.yaml
 
-    # Remove the old Chart.lock
-    rm -rf ../../chart/Chart.lock
-    
-    # Remove the old charts directory
-    rm -rf ../../chart/charts/
+  ${script_dir}/purgecache.sh
 
-    ./update-dependencies.sh
+  ${script_dir}/update-dependencies.sh
 
-  else
-    echo "✔ no changes detected in {$VOYAGE/.wayfinder/generated/Chart.yaml}"    
-  fi
-
-
-
+else
+  echo "✔ no changes detected in generated Chart.yaml"
+fi
