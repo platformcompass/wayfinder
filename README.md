@@ -1,5 +1,7 @@
 # Wayfinder
 
+![Wayfinder Logo](wayfinder_200.png)
+
 ## Summary
 
 Wayfinder is a toolkit for curating, testing, and deploying collections of platform capabilities to a Kubernetes cluster in a proven GitOps manner.
