@@ -1,6 +1,6 @@
 # Wayfinder
 
-![Wayfinder Logo](wayfinder_200.png)
+![Wayfinder Logo](docs/img/wayfinder_200.png)
 
 ## Summary
 
