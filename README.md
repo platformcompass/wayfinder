@@ -4,11 +4,11 @@
 
 ## Summary
 
-Wayfinder is a toolkit for curating, testing, and deploying collections of platform capabilities to a Kubernetes cluster in a proven GitOps manner.
+Wayfinder is a toolkit for curating, testing, and deploying collections of platform capabilities (Voyages) as versioned OCI artifacts to a container registry.  Wayfinder provides example configurations for deploying Voyages to a fleet of Kubernetes clusters in a GitOps manner.  
 
-Wayfinder publishes a Helm Chart which installs a named collection of dependent Helm Charts to a Kubernetes cluster. We call a named collection of charts with their pre-tested configuration a voyage.
+Extensible tooling built with [CUE](https://cuelang.org) is used to demonstrate a baseline process for managing the ongoing component upgrade cycle.  
 
-Wayfinder lets you spin up a local dev environment using Docker and Kubernetes KIND in under five minutes to test your voyages.
+To get your bearings with Wayfinder, you can spin up a local dev environment using Docker and Kubernetes KIND in under five minutes to take you first Voyage. 
 
 ## Intended Audience
 
@@ -16,144 +16,55 @@ Wayfinder lets you spin up a local dev environment using Docker and Kubernetes K
 - Kubernetes administrators or individual developers running Kubernetes clusters who want to follow a “paved path” for base component deployments.
 - Contributors wanting to share “known good” collection configurations that satisfy a contextual need such as air-gapped environments, cloud-hosted clusters, dev/prod cluster differences, etc.
 
-## How does it work?
+## Problem Statement
 
-This project spins up a Docker Registry container named `kind-registry` and a Kubernetes Kind cluster
-named `flux` under the same Docker network. Then it installs Flux and configures it to upgrade itself
-from the latest OCI artifact published at `ghcr.io/fluxcd/flux-manifests`. Before an upgrade, Flux
-verifies that the OCI artifacts are signed by the Flux team with Cosign and GitHub OIDC.
+When operating Kubernetes in Production at any scale, but especially as the number of clusters moves from 10s to 100s of clusters, it becomes essential to have an automated manner to package and deploy managed collections of platform capabilities that have been verified to work well together. These platform capabilities form the basis of the shared services that product delivery teams rely on to successfully deploy, operate, and monitor core customer-facing workloads.
 
-| Component                                                                                                | Role                            | Host                        |
-|----------------------------------------------------------------------------------------------------------|---------------------------------|-----------------------------|
-| [Kubernetes KIND](https://kind.sigs.k8s.io/)                                                             | Local cluster                   | Binds to port 80 and 443    |
-| [Docker Registry](https://docs.docker.com/registry/)                                                     | Local registry                  | Binds to port 5050          |
-| [Flux](https://fluxcd.io)                                                                                | Cluster reconciler              | -                           |
-| [ingress-nginx](https://github.com/kubernetes/ingress-nginx)                                             | Ingress for `*.flux.local`      | -                           |
-| [cert-manager](https://github.com/cert-manager/cert-manager)                                             | Self-signed ingress certs       | -                           |
-| [metrics-server](https://github.com/kubernetes-sigs/metrics-server)                                      | Container resource metrics      | -                           |
-| [kube-prometheus-stack](https://artifacthub.io/packages/helm/prometheus-community/kube-prometheus-stack) | Prometheus Operator and Grafana | Binds to grafana.flux.local |
-| [weave-gitops](https://github.com/weaveworks/weave-gitops)                                               | Flux UI                         | Binds to ui.flux.local      |
-| [podinfo](https://github.com/stefanprodan/podinfo)                                                       | Demo app                        | Binds to podinfo.flux.local |
+Platform capabilities are often provided by third-party software (open-source and commercial) packaged as Helm Charts which are installed and managed by an infrastructure, DevOps, or platform team. On a steady basis, new versions of platform components are released to address vulnerabilities, fixes, or to add new features. Every organization is different with regard to the  cost, benefit, and risk of upgrading platform components and will establish policies for performing required upgrades.  The platform operations team must factor the ongoing maintenance into the schedule and cost of running the container platform.   
 
-The Docker registry is exposed on the local machine on `localhost:5050` and inside the cluster
-on `kind-registry:5000`. The registry servers two purposes:
-- hosts container images e.g. `docker push localhost:5050/podinfo:test1`
-- hosts OCI artifacts e.g. `flux push artifact oci://localhost:5050/podinfo-manifests:test1`
+Most teams operating at scale follow a GitOps model, where the desired state of the platform is represented in source control, a tool such as [Flux CD](https://fluxcd.io/) or [ArgoCD](https://argo-cd.readthedocs.io/) is used to reconcile the current state to the the desired state. While GitOps practices and tools are generally considered a necessity, they do not answer higher order questions such as: 
 
-To facilitate ingress access to the Flux UI and any other
-application running inside the cluster, the Kubernetes Kind container
-binds to port `80` and `443` on localhost.
-Ingress is handled by Kubernetes ingress-nginx and self-signed TLS certs
-are provided by cert-manager.
+- How do I specify and package varying bundle sets to meet the unique needs of different customers or environments?
+- How can I deploy a bundle in an automated way to a local environment?
+- How can I perform automated testing for bundles to assure the behavior in a live cluster works as expected?
+- How do I manage the upgrade process of Kubernetes and component versions?
+- How do I know if existing cluster resources (Deployments, Services, CRDs, etc.) are compatible with the new API versions?
 
-To monitor how the deployed applications perform on the cluster,
-the kube-prometheus-stack and metrics-server Helm charts are installed at
-bootstrap along with the Flux Grafana dashboards.
+The above, non-exhaustive questions illustrate the inherent complexity of running production Kubernetes. In order to scale, platform operators require not only efficient tools and automation, but also an overall lifecycle managing Kubernetes.
 
-To monitor and debug Flux using a Web UI, the Weave GitOps Helm chart is
-installed at bootstrap.
+## Project Goals
 
+- simple, fail-safe configuration of declared state - eliminate tab/whitespace errors
+- Local Type checking and schema validation of configuration provides fast feedback
+- reduce boilerplate by using a DRY approach and generating YAML configuration
+- eliminate copy/paste errors
+- pluggable GitOps implementations
+    - HelmRepository
+    - HelmRelease
+    - OCIRepository
+    - Kustomization
+- bundles
+    - specify
+    - generate config
+    - vet
+    - export
+    - push OCI
+- lifecycle model with working examples
+    - cluster bootstrapping
+    - flux deploy
+    - platform deploy
+- tools
+- secrets
+- create a place to curate community-built bundles
 
-## How to get started?
+## Non-goals
 
-### Prerequisites
+- create bundles for all use cases
+- provide support for example bundles
 
-Start by cloning the repository locally:
+# Solution Architecture
 
-```shell
-git clone https://github.com/bobmhong/wayfinder.git
-cd wayfinder
-```
+What changes are required to solve this problem and achieve the project goals?
 
-Install Kubernetes kind, kubectl, flux and other CLI tools with Homebrew:
+What alternatives did you consider? Describe the evaluation criteria for how you chose the proposed solution.
 
-```shell
-make tools
-```
-
-The complete list of tools can be found in the `Brewfile`.
-
-Note that the minimum required version of Flux is `v2.0.0-rc.1`.
-
-### Bootstrap
-
-Start the dev environment with:
-
-```shell
-make up
-```
-
-The `make up` command performs the following steps:
-- creates the Docker registry container if it's not already running
-- creates the Kubernetes Kind cluster if it's not already running
-- pushes the Kubernetes manifests as OCI artifacts to the local registry
-  - `locahost:5050/flux-cluster-sync` is generated from `kubernetes/clusters/local`
-  - `locahost:5050/flux-infra-sync` is generated from `kubernetes/infra`
-  - `locahost:5050/flux-apps-sync` is generated from `kubernetes/apps`
-- installs Flux on the clusters and configures it to self upgrade from `oci://ghcr.io/fluxcd/flux-manifests`
-- waits for Flux to reconcile the cluster addons from `oci://kind-registry:5000/flux-infra-sync`
-- waits for Flux to reconcile the demo apps from `oci://kind-registry:5000/flux-apps-sync`
-
-### Access Flux UI
-
-![flux-ui](docs/img/weave-gitops.png)
-
-Add the following domains to `/etc/hosts`:
-
-```txt
-127.0.0.1 podinfo.flux.local
-127.0.0.1 grafana.flux.local
-127.0.0.1 ui.flux.local
-```
-
-Verify that the NGINX ingress self-signed TLS works:
-
-```shell
-make check
-```
-
-Access the Flux UI and Grafana using the username `admin` and password `flux`:
-
-- [http://ui.flux.local/applications](http://ui.flux.local/applications)
-- [http://grafana.flux.local/d/flux-control-plane](http://grafana.flux.local/d/flux-control-plane/flux-control-plane?orgId=1&refresh=10s) (username: admin, password: flux)
-- [http://grafana.flux.local/d/flux-cluster](http://grafana.flux.local/d/flux-cluster/flux-cluster-stats?orgId=1&refresh=10s)
-
-Access the demo application on [http://podinfo.flux.local](http://podinfo.flux.local/).
-
-### Sync local changes
-
-Add a label to the `apps` namespace definition:
-
-```shell
-yq eval '.metadata.labels.env="dev"' -i ./kubernetes/apps/namespace.yaml
-```
-
-Validate the Kubernetes manifests and Flux custom resources:
-
-```shell
-make validate
-```
-
-Push the changes to the local registry with:
-
-```shell
-make sync
-```
-
-Verify that Flux has reconciled the namespace:
-
-```shell
-kubectl get ns apps --show-labels
-```
-
-### Teardown
-
-Delete the registry and the Kubernetes cluster with:
-
-```shell
-make down
-```
-
-## Acknowledgements
-
-Thanks the great work of [Stefan Prodan's](https://github.com/stefanprodan) 🙌 ❤️ [flux-local-dev](https://github.com/stefanprodan/flux-local-dev/blob/main/README.md) for inspiring many patterns and scripts used in Wayfinder.
