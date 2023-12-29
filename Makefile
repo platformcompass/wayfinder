@@ -3,6 +3,9 @@
 # - Docker
 # - Homebrew
 
+REPO_ROOT := $(shell git rev-parse --show-toplevel)
+BUILD_DIR := $(REPO_ROOT)/build
+
 .POSIX:
 .EXPORT_ALL_VARIABLES:
 
@@ -74,3 +77,37 @@ echo:
 .PHONY: help
 help:  ## Display this help menu
 	@awk 'BEGIN {FS = ":.*##"; printf "\nUsage:\n  make \033[36m<target>\033[0m\n"} /^[a-zA-Z_0-9-]+:.*?##/ { printf "  \033[36m%-20s\033[0m %s\n", $$1, $$2 } /^##@/ { printf "\n\033[1m%s\033[0m\n", substr($$0, 5) } ' $(MAKEFILE_LIST)
+
+.PHONY: all
+all: vet fmt
+
+.PHONY: vet
+vet:
+	# @cue vet ./... -c
+	@cue vet ./pkg/... -c
+	@cue vet ./generators/... -c
+	# @cue vet ./tools/... -c
+
+.PHONE: fmt
+fmt:
+	@cue fmt ./...
+	@cue fmt ./pkg/...
+	@cue fmt ./generators/...
+	@cue fmt ./tools/...
+
+.PHONY: mod
+mod:
+	go get -u k8s.io/api/...
+	cue get go k8s.io/api/...
+	go get -u github.com/fluxcd/source-controller/api/v1beta2
+	cue get go github.com/fluxcd/source-controller/api/v1beta2
+	go get -u github.com/fluxcd/kustomize-controller/api/v1beta2
+	cue get go github.com/fluxcd/kustomize-controller/api/v1beta2
+	go get -u github.com/fluxcd/notification-controller/api/v1beta1
+	cue get go github.com/fluxcd/notification-controller/api/v1beta1
+	go get -u github.com/fluxcd/helm-controller/api/v2beta1
+	cue get go github.com/fluxcd/helm-controller/api/v2beta1
+	go get -u github.com/fluxcd/image-reflector-controller/api/v1beta1
+	cue get go github.com/fluxcd/image-reflector-controller/api/v1beta1
+	go get -u github.com/fluxcd/image-automation-controller/api/v1beta1
+	cue get go github.com/fluxcd/image-automation-controller/api/v1beta1
