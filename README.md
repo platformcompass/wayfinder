@@ -8,7 +8,7 @@ Wayfinder is a toolkit for curating, testing, and deploying collections of platf
 
 Extensible tooling built with [CUE](https://cuelang.org) is used to demonstrate a baseline process for managing the ongoing component upgrade cycle.  
 
-To get your bearings with Wayfinder, you can spin up a local dev environment using Docker and Kubernetes KIND in under five minutes to take you first Voyage. 
+To get your bearings with Wayfinder, you can spin up a local dev environment using Docker and Kubernetes KIND in under five minutes to take you first Voyage.
 
 ## Intended Audience
 
