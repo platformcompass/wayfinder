@@ -15,16 +15,3 @@ package voyage
 		annotations: "voyage.wayfinder.bobmhong.github.com/version": version
 	}
 }
-
-// Always set the name from the voyages key
-#voyages: [ID=_]: #Voyage & {
-    name: ID
-}
-
-// Combine all the generated objects
-_objectSets: [
-#voyages
-]
-
-// Create a list of all the objects
-objects: [ for v in _objectSets for x in v { x } ]

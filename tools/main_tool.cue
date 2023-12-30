@@ -4,10 +4,11 @@ import (
 	"tool/exec"
 	"encoding/yaml"
 	"encoding/json"
-	"github.com/bobmhong/wayfinder/pkg/voyage"
+	//"github.com/bobmhong/wayfinder/pkg/voyage"
+	"github.com/bobmhong/wayfinder/specs"
 )
 
-_objects: voyage.objects
+_objects: specs.objects
 
 // Export objects as YAML
 command: build: {

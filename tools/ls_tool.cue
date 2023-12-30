@@ -2,14 +2,16 @@ package main
 
 import (
 	"strings"
-	voyage "github.com/bobmhong/wayfinder/pkg/voyage"
+	specs "github.com/bobmhong/wayfinder/specs"
 )
+
+_objects: specs.objects
 
 command: ls: {
 	task: print: {
 		kind: "print"
 		let Lines = [
-			for k,v in _objects {
+			for k, v in _objects {
 				"\(v.name)\t\(v.version)"
 			},
 		]
@@ -32,4 +34,3 @@ command: ls: {
 // 		])
 // 	}
 // }
-
