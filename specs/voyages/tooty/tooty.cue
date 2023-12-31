@@ -1,7 +1,7 @@
-package specs
+package voyages
 
 import "github.com/bobmhong/wayfinder/pkg/voyage"
 
  
-#voyages: TootyTug: voyage.#Voyage & {
+#voyages: tooty: voyage.#Voyage & {
 }

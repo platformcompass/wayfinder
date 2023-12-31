@@ -1,11 +1,10 @@
-package main
+package voyages
 
 import "strings"
-import specs "github.com/bobmhong/wayfinder/specs/voyages:specs"
 
-_objects: specs.objects
+_objects: objects
 
-command: ls: {
+command: vls: {
 	task: print: {
 		kind: "print"
 		let Lines = [
