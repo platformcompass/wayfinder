@@ -111,3 +111,8 @@ mod:
 	cue get go github.com/fluxcd/image-reflector-controller/api/v1beta1
 	go get -u github.com/fluxcd/image-automation-controller/api/v1beta1
 	cue get go github.com/fluxcd/image-automation-controller/api/v1beta1
+
+.PHONY: cue-push
+cue-push: ## Push the CUE generated manifests to the registry
+	scripts/flux/push-cue.sh minnow staging
+	scripts/flux/push-cue.sh minnow production
