@@ -45,7 +45,7 @@ installed at bootstrap.
 Start by cloning the repository locally:
 
 ```shell
-git clone https://github.com/bobmhong/wayfinder.git
+git clone https://github.com/platformcompass/wayfinder.git
 cd wayfinder
 ```
 

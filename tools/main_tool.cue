@@ -4,8 +4,8 @@ import (
 	"tool/exec"
 	"encoding/yaml"
 	"encoding/json"
-	//"github.com/bobmhong/wayfinder/pkg/voyage"
-	"github.com/bobmhong/wayfinder/specs"
+	//"github.com/platformcompass/wayfinder/pkg/voyage"
+	"github.com/platformcompass/wayfinder/specs"
 )
 
 _objects: specs.objects

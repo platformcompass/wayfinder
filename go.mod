@@ -1,4 +1,4 @@
-module github.com/bobmhong/wayfinder
+module github.com/platformcompass/wayfinder
 
 go 1.21
 

@@ -1,7 +1,7 @@
 package voyages
 
 import (
-	"github.com/bobmhong/wayfinder/pkg/release"
+	"github.com/platformcompass/wayfinder/pkg/release"
 )
 
 //*****************************************************************************//

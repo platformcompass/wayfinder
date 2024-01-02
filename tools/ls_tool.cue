@@ -1,7 +1,7 @@
 package main
 
 import "strings"
-import specs "github.com/bobmhong/wayfinder/specs/voyages:specs"
+import specs "github.com/platformcompass/wayfinder/specs/voyages:specs"
 
 _objects: specs.objects
 

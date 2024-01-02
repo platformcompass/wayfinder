@@ -7,8 +7,8 @@ import (
 #ReleaseSpec: {
 	voyagename:       string & =~"^[a-z0-9]([a-z0-9\\-]){0,61}[a-z0-9]$"
 	voyageversion:    string
-	labels: "voyage.wayfinder.bobmhong.github.com/name": voyagename
-	annotations: "voyage.wayfinder.bobmhong.github.com/version": voyageversion
+	labels: "voyage.wayfinder.platformcompass.org/name": voyagename
+	annotations: "voyage.wayfinder.platformcompass.org/version": voyageversion
 	name:             string & =~"^[a-z0-9]([a-z0-9\\-]){0,61}[a-z0-9]$"
 	namespace:        string & =~"^[a-z0-9]([a-z0-9\\-]){0,61}[a-z0-9]$"
 	targetNamespace?: string & =~"^[a-z0-9]([a-z0-9\\-]){0,61}[a-z0-9]$"

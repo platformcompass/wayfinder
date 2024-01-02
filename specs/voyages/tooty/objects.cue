@@ -1,6 +1,6 @@
 package voyages
 
-import "github.com/bobmhong/wayfinder/pkg/voyage"
+import "github.com/platformcompass/wayfinder/pkg/voyage"
 
 // Always set the name from the voyages key
 #voyages: [ID=_]: voyage.#Voyage & {

@@ -1,1 +1,1 @@
-module: "github.com/bobmhong/wayfinder"
+module: "github.com/platformcompass/wayfinder"
