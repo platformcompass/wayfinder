@@ -116,3 +116,8 @@ mod:
 cue-push: ## Push the CUE generated manifests to the registry
 	scripts/flux/push-cue.sh minnow staging
 	scripts/flux/push-cue.sh minnow production
+
+TAG = platformcompass/wayfinder:local
+.PHONY: build-local-image ## Build the local wayfinder tools image
+build-local-image: 
+	@docker build . --platform=linux/x86_64 --tag ${TAG}
