@@ -40,4 +40,7 @@ RUN arkade get cosign \
   yq
 
 # update path to include arkade binaries
-ENV PATH="/root/.arkade/bin:${PATH}"
+# ENV PATH="/root/.arkade/bin:${PATH}"
+
+# move arkade installed binaries to /usr/local/bin for better pipeline support running as non-root
+RUN mv /root/.arkade/bin/* /usr/local/bin
