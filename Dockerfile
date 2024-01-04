@@ -43,4 +43,5 @@ RUN arkade get cosign \
 # ENV PATH="/root/.arkade/bin:${PATH}"
 
 # move arkade installed binaries to /usr/local/bin for better pipeline support running as non-root
-RUN mv /root/.arkade/bin/* /usr/local/bin
+# use chmod to allow all users to read and execute files in /root/.arkade/bin
+RUN chmod -R 755 /root/.arkade/bin && mv /root/.arkade/bin/* /usr/local/bin
