@@ -22,7 +22,7 @@ RUN arkade get cosign \
   hey \
   istioctl \
   jq \
-  ktop \
+  krew \
   kube-linter \
   kubectl \
   kubeval \
@@ -39,9 +39,7 @@ RUN arkade get cosign \
   vcluster \
   yq
 
-# update path to include arkade binaries
-# ENV PATH="/root/.arkade/bin:${PATH}"
-
 # move arkade installed binaries to /usr/local/bin for better pipeline support running as non-root
 # use chmod to allow all users to read and execute files in /root/.arkade/bin
-RUN chmod -R 755 /root/.arkade/bin && mv /root/.arkade/bin/* /usr/local/bin
+RUN ls /root/.arkade/bin > arkade-binaries.txt && chmod -R 755 /root/.arkade/bin && mv /root/.arkade/bin/* /usr/local/bin
+RUN krew install kuttl && mv /root/.krew/bin/* /usr/local/bin
