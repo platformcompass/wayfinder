@@ -1,43 +1,44 @@
-FROM debian:stable-20231218-slim
+FROM debian:stable-slim
+
+ARG KUBENT_VERSION=0.7.3
+ARG CUE_VERSION=v0.11.0
 
 RUN apt-get update \
   && apt-get install -y \
   build-essential \
   curl \
-  git
+  git && \
+  apt-get clean && \
+  rm -rf /var/lib/apt/lists/*
+
+# Install Kubent
+RUN curl -LO https://github.com/doitintl/kube-no-trouble/releases/download/${KUBENT_VERSION}/kubent-${KUBENT_VERSION}-linux-amd64.tar.gz \
+  && tar xzf kubent-${KUBENT_VERSION}-linux-amd64.tar.gz \
+  && mv kubent /usr/local/bin/kubent \
+  && chmod +x /usr/local/bin/kubent
 
 RUN curl -sLS https://get.arkade.dev | sh
 
-RUN curl -LO https://github.com/cue-lang/cue/releases/download/v0.7.0/cue_v0.7.0_linux_amd64.tar.gz \
-  && tar xzf cue_v0.7.0_linux_amd64.tar.gz \
+RUN curl -LO https://github.com/cue-lang/cue/releases/download/${CUE_VERSION}/cue_${CUE_VERSION}_linux_amd64.tar.gz \
+  && tar xzf cue_${CUE_VERSION}_linux_amd64.tar.gz \
   && chmod +x cue \
   && mv cue /usr/local/bin/cue
 
-RUN arkade get cosign \
-  dagger \
+RUN arkade get cosign \  
   flux \
   gh \
   gomplate \
   helm \
   hey \
-  istioctl \
   jq \
-  krew \
-  kube-linter \
-  kubectl \
-  kubeval \
+  krew \  
+  kubectl \  
   kustomize \
-  kyverno \
-  terraform \
-  terragrunt \
-  terrascan \
-  tfsec \
-  timoni \
-  trivy \
-  sops \
-  vault \
+  kyverno \  
+  sops \  
   vcluster \
-  yq
+  yq \
+  --quiet
 
 # move arkade installed binaries to /usr/local/bin for better pipeline support running as non-root
 # use chmod to allow all users to read and execute files in /root/.arkade/bin
