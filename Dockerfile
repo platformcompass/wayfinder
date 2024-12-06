@@ -46,3 +46,6 @@ RUN arkade get cosign \
 # use chmod to allow all users to read and execute files in /root/.arkade/bin
 RUN ls /root/.arkade/bin > arkade-binaries.txt && chmod -R 755 /root/.arkade/bin && mv /root/.arkade/bin/* /usr/local/bin
 RUN krew install kuttl && mv /root/.krew/bin/* /usr/local/bin
+
+# Download Kubescape Artifacts
+RUN mkdir -p /kubescape && kubescape download artifacts --output /kubescape
