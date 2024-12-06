@@ -7,7 +7,8 @@ RUN apt-get update \
   && apt-get install -y \
   build-essential \
   curl \
-  git && \
+  git \
+  net-tools && \
   apt-get clean && \
   rm -rf /var/lib/apt/lists/*
 
@@ -34,6 +35,7 @@ RUN arkade get cosign \
   krew \  
   kubectl \  
   kustomize \
+  kubescape \
   kyverno \  
   sops \  
   vcluster \
