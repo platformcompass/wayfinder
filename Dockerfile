@@ -32,7 +32,8 @@ RUN curl -LO https://github.com/cue-lang/cue/releases/download/${CUE_VERSION}/cu
 # Create a non-root user and group
 RUN groupadd -g ${GID} nonroot && \
     useradd -l -m -u ${UID} -g nonroot -s /bin/bash nonroot && \
-    echo 'nonroot ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
+    echo 'nonroot ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers && \
+    usermod -aG sudo nonroot
 
 # Set the working directory
 WORKDIR /home/nonroot/
