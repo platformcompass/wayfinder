@@ -2,15 +2,19 @@ FROM debian:stable-slim
 
 ARG KUBENT_VERSION=0.7.3
 ARG CUE_VERSION=v0.11.0
+ARG UID=1000
+ARG GID=1000
+ARG HOME=/home/nonroot
 
 RUN apt-get update \
   && apt-get install -y \
   build-essential \
   curl \
   git \
-  net-tools && \
-  apt-get clean && \
-  rm -rf /var/lib/apt/lists/*
+  net-tools \
+  sudo \
+  && apt-get clean \
+  && rm -rf /var/lib/apt/lists/*
 
 # Install Kubent
 RUN curl -LO https://github.com/doitintl/kube-no-trouble/releases/download/${KUBENT_VERSION}/kubent-${KUBENT_VERSION}-linux-amd64.tar.gz \
@@ -24,6 +28,20 @@ RUN curl -LO https://github.com/cue-lang/cue/releases/download/${CUE_VERSION}/cu
   && tar xzf cue_${CUE_VERSION}_linux_amd64.tar.gz \
   && chmod +x cue \
   && mv cue /usr/local/bin/cue
+
+# Create a non-root user and group
+RUN groupadd -g ${GID} nonroot && \
+    useradd -l -m -u ${UID} -g nonroot -s /bin/bash nonroot && \
+    echo 'nonroot ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
+
+# Set the working directory
+WORKDIR /home/nonroot/
+
+# Switch to the non-root user
+USER nonroot
+
+# Default command
+CMD ["bash"]    
 
 RUN arkade get cosign \  
   flux \
@@ -44,8 +62,10 @@ RUN arkade get cosign \
 
 # move arkade installed binaries to /usr/local/bin for better pipeline support running as non-root
 # use chmod to allow all users to read and execute files in /root/.arkade/bin
-RUN ls /root/.arkade/bin > arkade-binaries.txt && chmod -R 755 /root/.arkade/bin && mv /root/.arkade/bin/* /usr/local/bin
-RUN krew install kuttl && mv /root/.krew/bin/* /usr/local/bin
+RUN ls $HOME/.arkade/bin > arkade-binaries.txt && chmod -R 755 $HOME/.arkade/bin && sudo mv $HOME/.arkade/bin/* /usr/local/bin
+RUN krew install kuttl && sudo mv $HOME/.krew/bin/* /usr/local/bin
 
 # Download Kubescape Artifacts
-RUN mkdir -p /kubescape && kubescape download artifacts --output /kubescape
+RUN kubescape download artifacts && sudo mkdir /kubescape && sudo cp .kubescape/* /kubescape
+
+RUN git config --global --add safe.directory /work
