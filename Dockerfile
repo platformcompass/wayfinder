@@ -12,7 +12,6 @@ RUN apt-get update \
   curl \
   git \
   net-tools \
-  sudo \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/*
 
@@ -63,10 +62,10 @@ RUN arkade get cosign \
 
 # move arkade installed binaries to /usr/local/bin for better pipeline support running as non-root
 # use chmod to allow all users to read and execute files in /root/.arkade/bin
-RUN ls $HOME/.arkade/bin > arkade-binaries.txt && chmod -R 755 $HOME/.arkade/bin && sudo mv $HOME/.arkade/bin/* /usr/local/bin
-RUN krew install kuttl && sudo mv $HOME/.krew/bin/* /usr/local/bin
+RUN ls $HOME/.arkade/bin > arkade-binaries.txt && chmod -R 755 $HOME/.arkade/bin && mv $HOME/.arkade/bin/* /usr/local/bin
+RUN krew install kuttl &&  mv $HOME/.krew/bin/* /usr/local/bin
 
 # Download Kubescape Artifacts
-RUN kubescape download artifacts && sudo mkdir /kubescape && sudo cp .kubescape/* /kubescape
+RUN kubescape download artifacts && mkdir /kubescape && cp .kubescape/* /kubescape
 
 RUN git config --global --add safe.directory /work
