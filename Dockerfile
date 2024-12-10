@@ -66,6 +66,6 @@ RUN ls $HOME/.arkade/bin > arkade-binaries.txt && chmod -R 755 $HOME/.arkade/bin
 RUN krew install kuttl &&  mv $HOME/.krew/bin/* /usr/local/bin
 
 # Download Kubescape Artifacts
-RUN kubescape download artifacts && mkdir /kubescape && cp .kubescape/* /kubescape
+RUN kubescape download artifacts && mkdir /kubescape && cp $HOME/.kubescape/* /kubescape
 
 RUN git config --global --add safe.directory /work
