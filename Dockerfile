@@ -2,8 +2,8 @@ FROM debian:stable-slim
 
 ARG KUBENT_VERSION=0.7.3
 ARG CUE_VERSION=v0.11.0
-ARG UID=1000
-ARG GID=1000
+ARG UID=1001
+ARG GID=1002
 ARG HOME=/home/nonroot
 
 RUN apt-get update \
