@@ -2,9 +2,9 @@ FROM debian:stable-slim
 
 ARG KUBENT_VERSION=0.7.3
 ARG CUE_VERSION=v0.11.0
-ARG UID=1001
-ARG GID=1002
-ARG HOME=/home/nonroot
+# ARG UID=1001
+# ARG GID=1002
+ARG HOME=/root
 
 RUN apt-get update \
   && apt-get install -y \
@@ -30,16 +30,16 @@ RUN curl -LO https://github.com/cue-lang/cue/releases/download/${CUE_VERSION}/cu
   && mv cue /usr/local/bin/cue
 
 # Create a non-root user and group
-RUN groupadd -g ${GID} nonroot && \
-    useradd -l -m -u ${UID} -g nonroot -s /bin/bash nonroot && \
-    echo 'nonroot ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers && \
-    usermod -aG sudo nonroot
+# RUN groupadd -g ${GID} nonroot && \
+#     useradd -l -m -u ${UID} -g nonroot -s /bin/bash nonroot && \
+#     echo 'nonroot ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers && \
+#     usermod -aG sudo nonroot
 
-# Set the working directory
-WORKDIR /home/nonroot/
+# # Set the working directory
+# WORKDIR /home/nonroot/
 
-# Switch to the non-root user
-USER nonroot
+# # Switch to the non-root user
+# USER nonroot
 
 # Default command
 CMD ["bash"]    
