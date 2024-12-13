@@ -6,9 +6,13 @@ ARG CUE_VERSION=v0.11.0
 # ARG GID=1002
 ARG HOME=/root
 
+# Install Azure CLI
+RUN curl -sL https://aka.ms/InstallAzureCLIDeb | bash
+
 RUN apt-get update \
   && apt-get install -y \
   build-essential \
+  docker-ce-cli \
   curl \
   git \
   net-tools \
@@ -70,5 +74,3 @@ RUN krew install kuttl &&  mv $HOME/.krew/bin/* /usr/local/bin
 RUN kubescape download artifacts && mkdir /kubescape && cp $HOME/.kubescape/* /kubescape
 
 RUN git config --global --add safe.directory /work
-
-RUN curl -sL https://aka.ms/InstallAzureCLIDeb | bash
