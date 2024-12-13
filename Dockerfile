@@ -70,3 +70,5 @@ RUN krew install kuttl &&  mv $HOME/.krew/bin/* /usr/local/bin
 RUN kubescape download artifacts && mkdir /kubescape && cp $HOME/.kubescape/* /kubescape
 
 RUN git config --global --add safe.directory /work
+
+RUN curl -sL https://aka.ms/InstallAzureCLIDeb | bash
